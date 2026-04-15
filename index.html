@@ -253,7 +253,7 @@ body::before {
   color: #4a5b7a;
 }
 
-/* 服务流程 */
+/* 服务流程 - 图片图标替换数字 */
 .process-steps {
   display: flex;
   flex-wrap: nowrap;
@@ -279,7 +279,7 @@ body::before {
 .step-icon {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #165DFF, #2b6eff);
+  background: transparent;
   color: white;
   border-radius: 32px;
   display: flex;
@@ -288,6 +288,13 @@ body::before {
   margin: 0 auto 14px;
   font-size: 26px;
   font-weight: 800;
+  overflow: hidden;
+}
+.step-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .process-item h4 {
   font-size: 18px;
@@ -382,7 +389,7 @@ body::before {
   background: rgba(255, 255, 248, 0.98);
 }
 .advantage-list {
-  font-size: 15px;
+  font-size: 20px;
   line-height: 1.9;
   color: #1e2f41;
   padding-left: 8px;
@@ -557,11 +564,16 @@ body::before {
             <div class="card">
               <div class="card-title">回收服务流程</div>
               <div class="process-steps">
-                <div class="process-item"><div class="step-icon">1</div><h4>回收预约</h4><p>APP/小程序/电话预约，说明电池类型、容量及位置</p></div>
-                <div class="process-item"><div class="step-icon">2</div><h4>现场评估</h4><p>专业上门/网点检测，透明估价即时报价</p></div>
-                <div class="process-item"><div class="step-icon">3</div><h4>安全运输</h4><p>国标专用车，全程监控电池状态</p></div>
-                <div class="process-item"><div class="step-icon">4</div><h4>分类处理</h4><p>梯次利用/材料再生，价值最大化</p></div>
-                <div class="process-item"><div class="step-icon">5</div><h4>溯源管理</h4><p>全流程上链，客户/监管可查</p></div>
+                <!-- 步骤1: 回收预约 - 日历/预约图标 -->
+                <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM7 11h5v5H7v-5z'/%3E%3C/svg%3E" alt="预约"></div><h4>回收预约</h4><p>APP/小程序/电话预约，说明电池类型、容量及位置</p></div>
+                <!-- 步骤2: 现场评估 - 放大镜/评估图标 -->
+                <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E" alt="评估"></div><h4>现场评估</h4><p>专业上门/网点检测，透明估价即时报价</p></div>
+                <!-- 步骤3: 安全运输 - 卡车/运输图标 -->
+                <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E" alt="运输"></div><h4>安全运输</h4><p>国标专用车，全程监控电池状态</p></div>
+                <!-- 步骤4: 分类处理 - 循环/分类图标 -->
+                <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z'/%3E%3C/svg%3E" alt="分类"></div><h4>分类处理</h4><p>梯次利用/材料再生，价值最大化</p></div>
+                <!-- 步骤5: 溯源管理 - 区块链/链接图标 -->
+                <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M4 2h16v2H4V2zm2 4h12v2H6V6zm14 4H4v2h16v-2zm0 4H4v2h16v-2zm0 4H4v2h16v-2z'/%3E%3C/svg%3E" alt="溯源"></div><h4>溯源管理</h4><p>全流程上链，客户/监管可查</p></div>
               </div>
               <button class="btn-reserve" id="homeReserveBtn">📱 立即预约回收</button>
             </div>
@@ -650,9 +662,9 @@ body::before {
           <div class="card-title" style="font-size:28px;">📞 联系我们 & 网点查询</div>
           <div style="display: grid; gap: 32px;">
             <div class="contact-detail">
-              <p style="font-size:20px; margin-bottom:16px;">📞 全国服务热线：<strong>400-123-4567</strong></p>
-              <p style="font-size:18px; margin-bottom:16px;">✉️ 商务合作：<strong>contact@huanengxincheng.com</strong></p>
-              <p style="font-size:18px;">🏢 总部地址：上海市浦东新区新能源产业园·焕能芯程大厦</p>
+              <p style="font-size:20px; margin-bottom:16px;">📞 全国服务热线：<strong>18201846510</strong></p>
+              <p style="font-size:20px; margin-bottom:16px;">✉️ 商务合作：<strong>18201846510</strong></p>
+              <p style="font-size:20px;">🏢 总部地址：<strong style="color:#aaa;">（信息维护中）</strong></p>
             </div>
             <div style="background:#ffffff; border-radius: 36px; padding: 32px; border:1px solid #eef2ff;">
               <h3 style="color:#165DFF; font-size:24px;">📍 线下网点实时查询</h3>
@@ -661,7 +673,7 @@ body::before {
                 <button id="searchNetworkBtn" class="btn-reserve" style="width: auto; padding: 16px 36px; margin-top: 0;">查询网点</button>
               </div>
               <div id="networkResultArea" style="font-size: 16px; color: #2c3e66; margin-top: 16px;"></div>
-              <p style="margin-top: 24px; font-size:15px;">✨ 全国500+合作4S店/维修厂，覆盖287个城市，支持上门回收与评估。</p>
+              <p style="margin-top: 24px; font-size:15px; background:#fff6e5; padding:12px; border-radius:28px;">✨ 线下网点信息正在加速建设中，暂未开放。请致电客服热线 <strong>18201846510</strong> 咨询详情，我们将竭诚为您服务。</p>
             </div>
           </div>
         </div>
@@ -729,8 +741,8 @@ body::before {
   });
 
   document.getElementById('homeReserveBtn')?.addEventListener('click', () => switchToPage('reserve'));
-  document.getElementById('appEntry')?.addEventListener('click', () => { alert('焕能芯程APP即将上线，敬请期待。可先使用小程序预约。'); switchToPage('reserve'); });
-  document.getElementById('wxEntry')?.addEventListener('click', () => { alert('微信小程序搜索“焕能芯程回收”，一键预约上门。'); switchToPage('reserve'); });
+  document.getElementById('appEntry')?.addEventListener('click', () => { alert('焕能芯程APP即将上线，敬请期待。可先使用小程序预约。客服热线18201846510'); switchToPage('reserve'); });
+  document.getElementById('wxEntry')?.addEventListener('click', () => { alert('微信小程序搜索“焕能芯程回收”，一键预约上门。客服热线18201846510'); switchToPage('reserve'); });
   document.getElementById('locationEntry')?.addEventListener('click', () => switchToPage('contact'));
 
   const submitBtn = document.getElementById('submitReserveBtn');
@@ -739,7 +751,7 @@ body::before {
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
       if(!name || !phone) { alert('请填写姓名和联系电话'); return; }
-      alert(`✅ 预约成功！${name}，客服将尽快联系${phone}，安排上门评估。感谢您支持绿色循环！`);
+      alert(`✅ 预约成功！${name}，客服（热线18201846510）将尽快联系${phone}，安排上门评估。感谢您支持绿色循环！`);
       ['reserveName','reservePhone','reserveCar','reserveLocation','reserveTime'].forEach(id => document.getElementById(id).value = '');
       switchToPage('home');
     });
@@ -749,20 +761,14 @@ body::before {
   const networkResult = document.getElementById('networkResultArea');
   function searchNetworks() {
     const city = document.getElementById('cityNetworkInput').value.trim();
-    if(!city) { networkResult.innerHTML = '💡 请输入城市名，如：上海、深圳、成都、北京'; return; }
-    const mock = { '上海':['浦东新区东方路旗舰站','闵行虹桥维修厂合作点','嘉定新能源中心'], '深圳':['南山区科技园回收驿站','龙岗坂田服务站','宝安西乡绿色网点'], '北京':['朝阳CBD回收中心','海淀中关村服务点','丰台循环产业园'], '成都':['高新回收服务站','双流新能源基地','金牛区维修合作网点'] };
-    let found = false;
-    for(let k in mock) {
-      if(city.includes(k) || k.includes(city)) {
-        networkResult.innerHTML = `📍 ${k} 附近网点：${mock[k].join('、')}<br>📞 可拨打400-123-4567预约免费上门评估。`;
-        found = true; break;
-      }
+    if(!city) { 
+      networkResult.innerHTML = '💡 请输入城市名，如：上海、深圳、成都、北京'; 
+      return; 
     }
-    if(!found) networkResult.innerHTML = `✨ 即将开通 ${city} 地区服务，请致电400-123-4567咨询或使用线上预约。`;
+    networkResult.innerHTML = `📍 非常抱歉，线下网点信息正在加速建设中，暂未对外开放。<br>📞 如有回收需求，请直接拨打客服热线 <strong>18201846510</strong> 或通过线上预约，我们将安排专员对接。感谢您的理解与支持！`;
   }
   searchNetBtn?.addEventListener('click', searchNetworks);
 
-  // 搜索框
   function showSearchDropdown() {
     const dropdown = document.getElementById('searchDropdown');
     if (dropdown) {
