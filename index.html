@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>焕能芯程 - 新能源电池智能回收平台</title>
+<title>焕能芯程 - 新能源电池智能回收平台 | 粒子互联生态</title>
 <style>
 * {
   margin: 0;
@@ -12,37 +12,51 @@
   font-family: 'Segoe UI', 'Inter', 'Microsoft YaHei', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* 深邃科技背景 + 动态光晕 */
+/* 深邃科技背景 + 动态光晕 + 网格粒子融合 */
 body {
   background: radial-gradient(ellipse at 20% 30%, #eef2ff, #dce5f5);
   min-height: 100vh;
   color: #1a2634;
   position: relative;
-  overflow: hidden;
+  overflow: hidden;  /* 防止滚动条错位，粒子层fixed会覆盖 */
 }
 
-body::before {
-  content: "";
+/* 粒子画布层 - 悬浮底层 */
+#bgCanvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(circle at 1px 1px, rgba(22, 93, 255, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
 }
 
-/* 整体视口布局 */
+/* 鼠标跟随光晕（科技感增强） */
+.cursor-glow {
+  position: fixed;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(22,93,255,0.22), rgba(0,196,140,0.05) 70%, transparent);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  filter: blur(10px);
+  transition: opacity 0.2s;
+}
+
+/* 主内容容器提升层级，并保持视口滚动 */
 .app-wrapper {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
 }
 
-/* ========= 顶部导航 ========= */
+/* 顶部导航 */
 .header {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
@@ -63,6 +77,16 @@ body::before {
   gap: 32px;
 }
 
+/* 顶部导航的 logo 样式 */
+  .top-nav .logo-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .top-nav .logo-container img {
+    height: 60px;  /* 控制 logo 高度 */
+  }
+
 .logo {
   font-size: 32px;
   font-weight: 800;
@@ -72,6 +96,7 @@ body::before {
   color: transparent;
   letter-spacing: -0.5px;
 }
+
 .logo span {
   background: linear-gradient(135deg, #00C48C, #165DFF);
   background-clip: text;
@@ -139,7 +164,7 @@ body::before {
   cursor: pointer;
 }
 
-/* 主内容区 */
+/* 主内容滚动区域 */
 .main-content {
   flex: 1;
   overflow-y: auto;
@@ -167,7 +192,7 @@ body::before {
   flex-direction: column;
 }
 
-/* 页面切换容器 */
+/* 页面切换 */
 .page {
   display: none;
   width: 100%;
@@ -175,6 +200,12 @@ body::before {
 }
 .page.active-page {
   display: block;
+  animation: fadeInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ========= 首页网格 ========= */
@@ -192,18 +223,24 @@ body::before {
   gap: 28px;
 }
 
-/* 卡片大气，留白充足 */
+/* 卡片样式 - 已去除流光before伪元素和hover时的上浮+阴影特效，仅保留基础优雅阴影和圆角 */
 .card {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(2px);
   border-radius: 36px;
   padding: 28px 32px;
-  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255,255,255,0.7);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: box-shadow 0.2s ease;
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* 去除卡片悬停时的上浮效果，仅保留轻微阴影过渡 */
+.card:hover {
+  box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.12);
 }
 
 .card-title {
@@ -228,14 +265,13 @@ body::before {
   color: #165DFF;
 }
 
-/* ===== 核心数据 ===== */
+/* 数据网格卡片（微光效悬浮） */
 .data-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 22px;
   margin-bottom: 8px;
 }
-/* 全新数据卡片样式 - 渐变边框 + 微光效 + 悬浮提升 */
 .data-card {
   position: relative;
   background: linear-gradient(145deg, #ffffff, #f9fcff);
@@ -249,8 +285,6 @@ body::before {
   border: 1px solid rgba(22, 93, 255, 0.18);
   backdrop-filter: blur(2px);
 }
-
-/* 优雅的装饰光晕 */
 .data-card::after {
   content: '';
   position: absolute;
@@ -262,15 +296,12 @@ body::before {
   pointer-events: none;
   border-radius: 32px;
 }
-
 .data-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 24px 36px -12px rgba(22, 93, 255, 0.25);
   border-color: rgba(22, 93, 255, 0.4);
   background: linear-gradient(135deg, #ffffff, #f4faff);
 }
-
-/* 每个数据卡片顶部icon区 */
 .data-icon {
   font-size: 32px;
   margin-bottom: 12px;
@@ -288,7 +319,6 @@ body::before {
   transform: scale(1.02);
   background: linear-gradient(145deg, #ffffff, #165DFF10);
 }
-
 .data-card h3 {
   font-size: 38px;
   font-weight: 800;
@@ -299,9 +329,7 @@ body::before {
   letter-spacing: -0.5px;
   margin-bottom: 10px;
   margin-top: 8px;
-  transition: all 0.2s;
 }
-
 .data-card p {
   font-size: 15px;
   font-weight: 600;
@@ -310,11 +338,7 @@ body::before {
   display: inline-block;
   padding: 5px 14px;
   border-radius: 40px;
-  letter-spacing: 0.3px;
-  backdrop-filter: blur(2px);
 }
-
-/* 小趋势标记或额外信息 (增添细节) */
 .data-trend {
   margin-top: 12px;
   font-size: 12px;
@@ -328,7 +352,7 @@ body::before {
   border-radius: 40px;
 }
 
-/* 服务流程 */
+/* 服务流程步骤 */
 .process-steps {
   display: flex;
   flex-wrap: nowrap;
@@ -397,6 +421,21 @@ body::before {
   margin-top: 20px;
   transition: 0.2s;
   box-shadow: 0 10px 20px rgba(22,93,255,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.btn-reserve::after {
+  content: "";
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transition: 0.5s;
+}
+.btn-reserve:hover::after {
+  left: 100%;
 }
 .btn-reserve:hover {
   transform: translateY(-2px);
@@ -433,7 +472,7 @@ body::before {
 .orange-bg { background: linear-gradient(125deg, #FF7D00, #cc5c00); }
 .green-bg { background: linear-gradient(125deg, #00C48C, #008f66); }
 
-/* 产业链闭环 */
+/* 闭环 */
 .closed-loop {
   background: #eef3fc;
   border-radius: 32px;
@@ -458,7 +497,7 @@ body::before {
   color: #1f2e4a;
 }
 
-/* 右侧优势卡片 */
+/* 优势列表 */
 .advantage-card {
   background: rgba(255, 255, 248, 0.98);
 }
@@ -476,7 +515,7 @@ body::before {
   font-weight: 500;
 }
 
-/* ========= 底部导航 ========= */
+/* 底部导航 */
 .bottom-nav {
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(20px);
@@ -507,7 +546,7 @@ body::before {
   transform: translateY(-2px);
 }
 
-/* 其他页面（流程图、联系我们、预约）*/
+/* 其他页面通用 */
 .full-card {
   background: rgba(255,255,255,0.96);
   border-radius: 40px;
@@ -530,8 +569,6 @@ body::before {
   font-size: 18px;
 }
 
-/* ========= 流程图样式 ========= */
-/* 流程图步骤容器 */
 .flow-steps-container {
   display: flex;
   align-items: center;
@@ -545,7 +582,6 @@ body::before {
   flex-direction: column;
   align-items: center;
 }
-/* 流程图圆形图标容器 - 与首页step-icon风格统一但更大 */
 .flow-step-circle {
   width: 80px;
   height: 80px;
@@ -558,7 +594,6 @@ body::before {
   transition: all 0.2s;
   box-shadow: 0 8px 18px rgba(22,93,255,0.2);
 }
-/* 图标img样式 */
 .flow-step-circle img {
   width: 48px;
   height: 48px;
@@ -581,48 +616,28 @@ body::before {
   margin: 0 4px;
   transform: translateY(-12px);
 }
-
 @media (max-width: 1000px) {
   .flow-arrow { transform: translateY(-8px); font-size: 28px; }
   .flow-step-circle { width: 65px; height: 65px; }
   .flow-step-circle img { width: 38px; height: 38px; }
-}
-
-@media (max-width: 800px) {
-  .flow-arrow { transform: translateY(-6px); }
-}
-
-@media (max-width: 700px) {
-  .flow-steps-container { gap: 4px; }
-  .flow-arrow { transform: translateY(-10px); }
-}
-
-.contact-detail p {
-  margin-bottom: 12px;
-}
-
-@media (max-width: 1300px) {
-  .top-nav { padding: 10px 24px; }
-  .main-content { padding: 20px 24px; }
-  .card-title { font-size: 22px; }
-  .data-card h3 { font-size: 30px; }
-  .process-steps { gap: 12px; }
-  .data-icon { width: 48px; height: 48px; line-height: 48px; font-size: 28px; }
-}
-@media (max-width: 1000px) {
   .home-grid { grid-template-columns: 1fr; gap: 24px; }
   .data-grid { gap: 16px; }
 }
 @media (max-width: 680px) {
   .data-grid { grid-template-columns: repeat(2,1fr); gap: 18px; }
   .data-card h3 { font-size: 32px; }
+  .process-steps { flex-wrap: wrap; }
 }
 </style>
 </head>
 <body>
-<div class="app-wrapper">
+<canvas id="bgCanvas"></canvas>
+<div class="cursor-glow" id="glow"></div>
+
+<div class="app-wrapper fade">
   <div class="header">
     <div class="top-nav">
+      <div class="logo-container"><img src="./logo.jpg" alt="Logo"></div>
       <div class="logo">焕能<span>芯程</span></div>
       <div class="nav-links" id="navLinks">
         <a href="javascript:void(0)" data-page="home" class="active">首页</a>
@@ -640,7 +655,7 @@ body::before {
   </div>
 
   <div class="main-content">
-    <!-- 首页  -->
+    <!-- 首页 -->
     <div id="homePage" class="page active-page">
       <div class="container">
         <div class="home-grid">
@@ -648,44 +663,19 @@ body::before {
             <div class="card">
               <div class="card-title">核心数据 · 绿能引擎</div>
               <div class="data-grid">
-                <div class="data-card">
-                  <div class="data-icon">🔋</div>
-                  <h3>43<span style="font-size:0.6em;">GWh</span></h3>
-                  <p>2026退役规模</p>
-                  <div class="data-trend">📈 +28% 年增长</div>
-                </div>
-                <div class="data-card">
-                  <div class="data-icon">💰</div>
-                  <h3>480<span style="font-size:0.6em;">亿</span></h3>
-                  <p>回收市场规模</p>
-                  <div class="data-trend">📊 千亿赛道启航</div>
-                </div>
-                <div class="data-card">
-                  <div class="data-icon">♻️</div>
-                  <h3>99<span style="font-size:0.6em;">%</span></h3>
-                  <p>材料再生利用率</p>
-                  <div class="data-trend">🌱 行业标杆</div>
-                </div>
-                <div class="data-card">
-                  <div class="data-icon">🌍</div>
-                  <h3>30<span style="font-size:0.6em;">万吨</span></h3>
-                  <p>单GWh减碳</p>
-                  <div class="data-trend">✨ 相当于造林1650亩</div>
-                </div>
+                <div class="data-card"><div class="data-icon">🔋</div><h3>43<span style="font-size:0.6em;">GWh</span></h3><p>2026退役规模</p><div class="data-trend">📈 +28% 年增长</div></div>
+                <div class="data-card"><div class="data-icon">💰</div><h3>480<span style="font-size:0.6em;">亿</span></h3><p>回收市场规模</p><div class="data-trend">📊 千亿赛道启航</div></div>
+                <div class="data-card"><div class="data-icon">♻️</div><h3>99<span style="font-size:0.6em;">%</span></h3><p>材料再生利用率</p><div class="data-trend">🌱 行业标杆</div></div>
+                <div class="data-card"><div class="data-icon">🌍</div><h3>30<span style="font-size:0.6em;">万吨</span></h3><p>单GWh减碳</p><div class="data-trend">✨ 相当于造林1650亩</div></div>
               </div>
             </div>
             <div class="card">
               <div class="card-title">回收服务流程</div>
               <div class="process-steps">
-                <!-- 步骤1: 回收预约 - 日历/预约图标 -->
                 <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM7 11h5v5H7v-5z'/%3E%3C/svg%3E" alt="预约"></div><h4>回收预约</h4><p>APP/小程序/电话预约，说明电池类型、容量及位置</p></div>
-                <!-- 步骤2: 现场评估 - 放大镜/评估图标 -->
                 <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E" alt="评估"></div><h4>现场评估</h4><p>专业上门/网点检测，透明估价即时报价</p></div>
-                <!-- 步骤3: 安全运输 - 卡车/运输图标 -->
                 <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E" alt="运输"></div><h4>安全运输</h4><p>国标专用车，全程监控电池状态</p></div>
-                <!-- 步骤4: 分类处理 - 循环/分类图标 -->
                 <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z'/%3E%3C/svg%3E" alt="分类"></div><h4>分类处理</h4><p>梯次利用/材料再生，价值最大化</p></div>
-                <!-- 步骤5: 溯源管理 - 区块链/链接图标 -->
                 <div class="process-item"><div class="step-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23165DFF'%3E%3Cpath d='M4 2h16v2H4V2zm2 4h12v2H6V6zm14 4H4v2h16v-2zm0 4H4v2h16v-2zm0 4H4v2h16v-2z'/%3E%3C/svg%3E" alt="溯源"></div><h4>溯源管理</h4><p>全流程上链，客户/监管可查</p></div>
               </div>
               <button class="btn-reserve" id="homeReserveBtn">📱 立即预约回收</button>
@@ -720,42 +710,22 @@ body::before {
       </div>
     </div>
 
-    <!-- 流程图页面  - 图标替换为首页对应图标，样式复用style定义 -->
+    <!-- 流程图页面（与第二段风格完全一致并增强粒子背景适配） -->
     <div id="flowPage" class="page">
       <div class="container">
         <div class="full-card">
           <div class="card-title" style="font-size:28px;">📊 回收全流程 · 五步闭环详解</div>
           <div class="flow-visual-large">
             <div class="flow-steps-container">
-              <!-- 步骤1: 回收预约 图标(日历) -->
-              <div class="flow-step-item">
-                <div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM7 11h5v5H7v-5z'/%3E%3C/svg%3E" alt="预约"></div>
-                <div class="flow-step-label">回收预约</div>
-              </div>
+              <div class="flow-step-item"><div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM7 11h5v5H7v-5z'/%3E%3C/svg%3E" alt="预约"></div><div class="flow-step-label">回收预约</div></div>
               <div class="flow-arrow">→</div>
-              <!-- 步骤2: 现场评估 图标(放大镜) -->
-              <div class="flow-step-item">
-                <div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E" alt="评估"></div>
-                <div class="flow-step-label">现场评估</div>
-              </div>
+              <div class="flow-step-item"><div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z'/%3E%3C/svg%3E" alt="评估"></div><div class="flow-step-label">现场评估</div></div>
               <div class="flow-arrow">→</div>
-              <!-- 步骤3: 安全运输 图标(卡车) -->
-              <div class="flow-step-item">
-                <div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E" alt="运输"></div>
-                <div class="flow-step-label">安全运输</div>
-              </div>
+              <div class="flow-step-item"><div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z'/%3E%3C/svg%3E" alt="运输"></div><div class="flow-step-label">安全运输</div></div>
               <div class="flow-arrow">→</div>
-              <!-- 步骤4: 分类处理 图标(分类/人形循环) -->
-              <div class="flow-step-item">
-                <div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z'/%3E%3C/svg%3E" alt="分类"></div>
-                <div class="flow-step-label">分类处理</div>
-              </div>
+              <div class="flow-step-item"><div class="flow-step-circle"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z'/%3E%3C/svg%3E" alt="分类"></div><div class="flow-step-label">分类处理</div></div>
               <div class="flow-arrow">→</div>
-              <!-- 步骤5: 溯源管理 图标(区块链/链接) 特殊颜色保留 -->
-              <div class="flow-step-item">
-                <div class="flow-step-circle" style="background: #00C48C;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M4 2h16v2H4V2zm2 4h12v2H6V6zm14 4H4v2h16v-2zm0 4H4v2h16v-2zm0 4H4v2h16v-2z'/%3E%3C/svg%3E" alt="溯源"></div>
-                <div class="flow-step-label">溯源管理</div>
-              </div>
+              <div class="flow-step-item"><div class="flow-step-circle" style="background: #00C48C;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M4 2h16v2H4V2zm2 4h12v2H6V6zm14 4H4v2h16v-2zm0 4H4v2h16v-2zm0 4H4v2h16v-2z'/%3E%3C/svg%3E" alt="溯源"></div><div class="flow-step-label">溯源管理</div></div>
             </div>
             <p style="background:#eef2ff; display:inline-block; padding:12px 32px; border-radius:60px; font-weight:700; margin-top: 16px;">🌿 区块链溯源 | 碳足迹追踪 | 合规处置</p>
           </div>
@@ -779,20 +749,8 @@ body::before {
         <div class="full-card">
           <div class="card-title" style="font-size:28px;">📞 联系我们 & 网点查询</div>
           <div style="display: grid; gap: 32px;">
-            <div class="contact-detail">
-              <p style="font-size:20px; margin-bottom:16px;">📞 全国服务热线：<strong>18201846510</strong></p>
-              <p style="font-size:20px; margin-bottom:16px;">✉️ 商务合作：<strong>18201846510</strong></p>
-              <p style="font-size:20px;">🏢 总部地址：<strong style="color:#aaa;">（信息维护中）</strong></p>
-            </div>
-            <div style="background:#ffffff; border-radius: 36px; padding: 32px; border:1px solid #eef2ff;">
-              <h3 style="color:#165DFF; font-size:24px;">📍 线下网点实时查询</h3>
-              <div style="display: flex; gap: 20px; margin: 28px 0;">
-                <input type="text" id="cityNetworkInput" placeholder="输入城市名，例如：深圳、成都、上海" style="flex:2; padding: 16px 20px; border-radius: 60px; border:1px solid #ccc; font-size:16px;">
-                <button id="searchNetworkBtn" class="btn-reserve" style="width: auto; padding: 16px 36px; margin-top: 0;">查询网点</button>
-              </div>
-              <div id="networkResultArea" style="font-size: 16px; color: #2c3e66; margin-top: 16px;"></div>
-              <p style="margin-top: 24px; font-size:15px; background:#fff6e5; padding:12px; border-radius:28px;">✨ 线下网点信息正在加速建设中，暂未开放。请致电客服热线 <strong>18201846510</strong> 咨询详情，我们将竭诚为您服务。</p>
-            </div>
+            <div class="contact-detail"><p style="font-size:20px; margin-bottom:16px;">📞 全国服务热线：<strong>18201846510</strong></p><p style="font-size:20px; margin-bottom:16px;">✉️ 商务合作：<strong>18201846510</strong></p><p style="font-size:20px;">🏢 总部地址：<strong style="color:#aaa;">（信息维护中）</strong></p></div>
+            <div style="background:#ffffff; border-radius: 36px; padding: 32px; border:1px solid #eef2ff;"><h3 style="color:#165DFF; font-size:24px;">📍 线下网点实时查询</h3><div style="display: flex; gap: 20px; margin: 28px 0;"><input type="text" id="cityNetworkInput" placeholder="输入城市名，例如：深圳、成都、上海" style="flex:2; padding: 16px 20px; border-radius: 60px; border:1px solid #ccc; font-size:16px;"><button id="searchNetworkBtn" class="btn-reserve" style="width: auto; padding: 16px 36px; margin-top: 0;">查询网点</button></div><div id="networkResultArea" style="font-size: 16px; color: #2c3e66; margin-top: 16px;"></div><p style="margin-top: 24px; font-size:15px; background:#fff6e5; padding:12px; border-radius:28px;">✨ 线下网点信息正在加速建设中，暂未开放。请致电客服热线 <strong>18201846510</strong> 咨询详情，我们将竭诚为您服务。</p></div>
           </div>
         </div>
       </div>
@@ -825,98 +783,121 @@ body::before {
 </div>
 
 <script>
+  // ================= 炫酷粒子网络系统 =================
+  const canvas = document.getElementById("bgCanvas");
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  let particles = [];
+  const PARTICLE_COUNT = 130;
+  const CONNECT_DIST = 150;
+  const MOUSE_RADIUS = 140;
+  let mouseX = -1000, mouseY = -1000;
+
+  function resizeCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    initParticles();
+  }
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * width, y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+        radius: 1.8 + Math.random() * 2.5,
+        baseColor: `hsla(${200 + Math.random() * 40}, 85%, 60%, 0.85)`
+      });
+    }
+  }
+  function drawParticleNetwork() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, width, height);
+    for (let p of particles) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) { p.x = 0; p.vx = -p.vx; }
+      if (p.x > width) { p.x = width; p.vx = -p.vx; }
+      if (p.y < 0) { p.y = 0; p.vy = -p.vy; }
+      if (p.y > height) { p.y = height; p.vy = -p.vy; }
+    }
+    let dynamicRadii = particles.map(p => {
+      let dx = p.x - mouseX, dy = p.y - mouseY;
+      let dist = Math.hypot(dx, dy);
+      if (dist < MOUSE_RADIUS) return Math.min(p.radius * (1 + (1 - dist / MOUSE_RADIUS) * 0.8), 4.8);
+      return p.radius;
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const p1 = particles[i], p2 = particles[j];
+        const distance = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        if (distance < CONNECT_DIST) {
+          let opacity = (1 - distance / CONNECT_DIST) * 0.35;
+          let p1Near = Math.hypot(p1.x - mouseX, p1.y - mouseY) < MOUSE_RADIUS;
+          let p2Near = Math.hypot(p2.x - mouseX, p2.y - mouseY) < MOUSE_RADIUS;
+          if (p1Near || p2Near) opacity = Math.min(opacity + 0.25, 0.7);
+          ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(22, 140, 255, ${opacity * 0.9})`; ctx.lineWidth = 1.2; ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(0, 196, 140, ${opacity * 0.5})`; ctx.lineWidth = 0.8; ctx.stroke();
+        }
+      }
+    }
+    for (let idx = 0; idx < particles.length; idx++) {
+      const p = particles[idx]; const rad = dynamicRadii[idx];
+      ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
+      ctx.fillStyle = p.baseColor; ctx.fill();
+      ctx.shadowBlur = 8; ctx.shadowColor = "rgba(22, 93, 255, 0.6)";
+      ctx.beginPath(); ctx.arc(p.x, p.y, rad * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, rad * 1.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(22, 93, 255, 0.2)`; ctx.fill();
+    }
+  }
+  document.addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; const glow = document.getElementById("glow"); if(glow) { glow.style.left = e.clientX + "px"; glow.style.top = e.clientY + "px"; } });
+  document.addEventListener("mouseleave", () => { mouseX = -1000; mouseY = -1000; });
+  function animateNetwork() { drawParticleNetwork(); requestAnimationFrame(animateNetwork); }
+  window.addEventListener("resize", () => resizeCanvas());
+  resizeCanvas(); animateNetwork();
+
+  // 页面交互逻辑
   function switchToPage(pageId) {
     const pages = ['homePage', 'flowPage', 'contactPage', 'reservePage'];
-    pages.forEach(p => {
-      const el = document.getElementById(p);
-      if(el) el.classList.remove('active-page');
-    });
-    const targetMap = { 'home': 'homePage', 'flow': 'flowPage', 'contact': 'contactPage', 'reserve': 'reservePage' };
-    const targetId = targetMap[pageId];
-    if(targetId) document.getElementById(targetId).classList.add('active-page');
-    
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.classList.remove('active');
-      if(link.getAttribute('data-page') === pageId) link.classList.add('active');
-    });
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.classList.remove('active');
-      if(item.getAttribute('data-nav') === pageId) item.classList.add('active');
-    });
+    pages.forEach(p => document.getElementById(p)?.classList.remove('active-page'));
+    const map = { 'home':'homePage', 'flow':'flowPage', 'contact':'contactPage', 'reserve':'reservePage' };
+    const target = map[pageId];
+    if(target) document.getElementById(target).classList.add('active-page');
+    document.querySelectorAll('.nav-links a').forEach(link => { link.classList.remove('active'); if(link.getAttribute('data-page') === pageId) link.classList.add('active'); });
+    document.querySelectorAll('.nav-item').forEach(item => { item.classList.remove('active'); if(item.getAttribute('data-nav') === pageId) item.classList.add('active'); });
   }
-
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const pg = link.getAttribute('data-page');
-      if(pg) switchToPage(pg);
-    });
-  });
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const navTo = item.getAttribute('data-nav');
-      if(navTo) switchToPage(navTo);
-    });
-  });
-
+  document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => switchToPage(link.getAttribute('data-page'))));
+  document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchToPage(item.getAttribute('data-nav'))));
   document.getElementById('homeReserveBtn')?.addEventListener('click', () => switchToPage('reserve'));
   document.getElementById('appEntry')?.addEventListener('click', () => { alert('焕能芯程APP即将上线，敬请期待。可先使用小程序预约。客服热线18201846510'); switchToPage('reserve'); });
   document.getElementById('wxEntry')?.addEventListener('click', () => { alert('微信小程序搜索“焕能芯程回收”，一键预约上门。客服热线18201846510'); switchToPage('reserve'); });
   document.getElementById('locationEntry')?.addEventListener('click', () => switchToPage('contact'));
-
-  const submitBtn = document.getElementById('submitReserveBtn');
-  if(submitBtn) {
-    submitBtn.addEventListener('click', () => {
-      const name = document.getElementById('reserveName').value.trim();
-      const phone = document.getElementById('reservePhone').value.trim();
-      if(!name || !phone) { alert('请填写姓名和联系电话'); return; }
-      alert(`✅ 预约成功！${name}，客服（热线18201846510）将尽快联系${phone}，安排上门评估。感谢您支持绿色循环！`);
-      ['reserveName','reservePhone','reserveCar','reserveLocation','reserveTime'].forEach(id => document.getElementById(id).value = '');
-      switchToPage('home');
-    });
-  }
-
-  const searchNetBtn = document.getElementById('searchNetworkBtn');
-  const networkResult = document.getElementById('networkResultArea');
-  function searchNetworks() {
+  document.getElementById('submitReserveBtn')?.addEventListener('click', () => {
+    const name = document.getElementById('reserveName').value.trim();
+    const phone = document.getElementById('reservePhone').value.trim();
+    if(!name || !phone) { alert('请填写姓名和联系电话'); return; }
+    alert(`✅ 预约成功！${name}，客服（热线18201846510）将尽快联系${phone}，安排上门评估。感谢您支持绿色循环！`);
+    ['reserveName','reservePhone','reserveCar','reserveLocation','reserveTime'].forEach(id => document.getElementById(id).value = '');
+    switchToPage('home');
+  });
+  document.getElementById('searchNetworkBtn')?.addEventListener('click', () => {
     const city = document.getElementById('cityNetworkInput').value.trim();
-    if(!city) { 
-      networkResult.innerHTML = '💡 请输入城市名，如：上海、深圳、成都、北京'; 
-      return; 
-    }
-    networkResult.innerHTML = `📍 非常抱歉，线下网点信息正在加速建设中，暂未对外开放。<br>📞 如有回收需求，请直接拨打客服热线 <strong>18201846510</strong> 或通过线上预约，我们将安排专员对接。感谢您的理解与支持！`;
-  }
-  searchNetBtn?.addEventListener('click', searchNetworks);
-
+    const resultDiv = document.getElementById('networkResultArea');
+    if(!city) resultDiv.innerHTML = '💡 请输入城市名，如：上海、深圳、成都、北京';
+    else resultDiv.innerHTML = `📍 非常抱歉，线下网点信息正在加速建设中，暂未对外开放。<br>📞 如有回收需求，请直接拨打客服热线 <strong>18201846510</strong> 或通过线上预约，我们将安排专员对接。感谢您的理解与支持！`;
+  });
   function showSearchDropdown() {
     const dropdown = document.getElementById('searchDropdown');
-    if (dropdown) {
-      dropdown.style.display = 'block';
-      dropdown.innerHTML = `
-        <div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('reserve')">🔋 预约回收</div>
-        <div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('flow')">📊 流程图</div>
-        <div style="padding:16px;cursor:pointer;font-weight:600;" onclick="switchToPage('contact')">📍 网点查询</div>
-      `;
-    }
+    if(dropdown) { dropdown.style.display = 'block'; dropdown.innerHTML = `<div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('reserve')">🔋 预约回收</div><div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('flow')">📊 流程图</div><div style="padding:16px;cursor:pointer;font-weight:600;" onclick="switchToPage('contact')">📍 网点查询</div>`; }
   }
-  
-  function handleSearchInput() {
-    const dropdown = document.getElementById('searchDropdown');
-    if (dropdown && dropdown.style.display === 'block') {
-      dropdown.innerHTML = `
-        <div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('reserve')">🔋 预约回收</div>
-        <div style="padding:16px;cursor:pointer;font-weight:600;border-bottom:1px solid #f0f0f0;" onclick="switchToPage('flow')">📊 流程图</div>
-        <div style="padding:16px;cursor:pointer;font-weight:600;" onclick="switchToPage('contact')">📍 网点查询</div>
-      `;
-    }
-  }
-  
-  function hideSearchDropdownDelayed() {
-    setTimeout(() => {
-      const dropdown = document.getElementById('searchDropdown');
-      if (dropdown) dropdown.style.display = 'none';
-    }, 200);
-  }
-  
+  function handleSearchInput() { showSearchDropdown(); }
+  function hideSearchDropdownDelayed() { setTimeout(() => { const dd = document.getElementById('searchDropdown'); if(dd) dd.style.display = 'none'; }, 200); }
+  window.switchToPage = switchToPage;
   switchToPage('home');
 </script>
 </body>
